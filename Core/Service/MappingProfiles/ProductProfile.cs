@@ -13,7 +13,11 @@ namespace Service.MappingProfiles
                 .MapFrom(src => src.ProductBrand.Name))
 
                 .ForMember(des => des.TypeName, options => options
-                .MapFrom(src => src.ProductType.Name));
+                .MapFrom(src => src.ProductType.Name))
+
+                .ForMember(des => des.PictureUrl, options => options
+                .MapFrom<PictureUrlResolver>());
+
             CreateMap<ProductType, TypeDto>();
             CreateMap<ProductBrand, BrandDto>();
         }

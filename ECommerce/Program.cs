@@ -51,6 +51,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+// To use Static Files *product images*
+app.UseStaticFiles();
 
 app.UseAuthorization();
 
