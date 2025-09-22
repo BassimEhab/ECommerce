@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DomainLayer.Contracts;
 using DomainLayer.Models;
+using Service.Specification;
 using ServiceAbstraction;
 using Shared.DataTransferObjects;
 namespace Service
@@ -9,15 +10,15 @@ namespace Service
     {
         public async Task<IEnumerable<ProductDto>> GetAllProductsAsync()
         {
-            var repo = _unitOfWork.GetRepository<Product, int>();
-            var products = await repo.GetAllAsync();
+            var specification = new ProductWithBrandsAndTypesSpecification();
+            var products = await _unitOfWork.GetRepository<Product, int>().GetAllAsync(specification);
             var productsDto = _mapper.Map<IEnumerable<Product>, IEnumerable<ProductDto>>(products);
             return productsDto;
         }
         public async Task<ProductDto> GetProductByIdAsync(int id)
         {
-            var repo = _unitOfWork.GetRepository<Product, int>();
-            var product = await repo.GetByIdAsync(id);
+            var specification = new ProductWithBrandsAndTypesSpecification(id);
+            var product = await _unitOfWork.GetRepository<Product, int>().GetByIdAsync(specification);
             var productDto = _mapper.Map<Product, ProductDto>(product);
             return productDto;
 
@@ -25,16 +26,14 @@ namespace Service
 
         public async Task<IEnumerable<TypeDto>> GetAllTypesAsync()
         {
-            var repo = _unitOfWork.GetRepository<ProductType, int>();
-            var types = await repo.GetAllAsync();
+            var types = await _unitOfWork.GetRepository<ProductType, int>().GetAllAsync();
             var typesDto = _mapper.Map<IEnumerable<ProductType>, IEnumerable<TypeDto>>(types);
             return typesDto;
         }
 
         public async Task<IEnumerable<BrandDto>> GetBrandsAsync()
         {
-            var repo = _unitOfWork.GetRepository<ProductBrand, int>();
-            var brands = await repo.GetAllAsync();
+            var brands = await _unitOfWork.GetRepository<ProductBrand, int>().GetAllAsync();
             var brandsDto = _mapper.Map<IEnumerable<ProductBrand>, IEnumerable<BrandDto>>(brands);
             return brandsDto;
         }
