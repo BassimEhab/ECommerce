@@ -6,18 +6,18 @@ namespace Service.Specification
     internal class ProductWithBrandsAndTypesSpecification : BaseSpecifications<Product, int>
     {
         // Get All Products With Types and Brands
-        public ProductWithBrandsAndTypesSpecification(int? BrandId, int? TypeId, ProductSortingOptions SortingOption)
+        public ProductWithBrandsAndTypesSpecification(ProductQueryParams queryParams)
             : base(
                 p =>
-                (!BrandId.HasValue || p.BrandId == BrandId)
+                (!queryParams.BrandId.HasValue || p.BrandId == queryParams.BrandId)
                 &&
-                (!TypeId.HasValue || p.TypeId == TypeId)
+                (!queryParams.TypeId.HasValue || p.TypeId == queryParams.TypeId)
                 )
         {
 
             AddInclude(p => p.ProductBrand);
             AddInclude(p => p.ProductType);
-            switch (SortingOption)
+            switch (queryParams.SortingOptions)
             {
                 case ProductSortingOptions.NameAsc:
                     AddOrderBy(p => p.Name);
