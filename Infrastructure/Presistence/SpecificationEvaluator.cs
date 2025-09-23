@@ -13,10 +13,19 @@ namespace Presistence
             {
                 query = query.Where(specifications.Criteria);
             }
+            if (specifications.OrderBy is not null)
+            {
+                query = query.OrderBy(specifications.OrderBy);
+            }
+            if (specifications.OrderByDescending is not null)
+            {
+                query = query.OrderByDescending(specifications.OrderByDescending);
+            }
             if (specifications.Includes is not null)
             {
                 query = specifications.Includes.Aggregate(query, (current, includeExp) => current.Include(includeExp));
             }
+
             return query;
         }
 
