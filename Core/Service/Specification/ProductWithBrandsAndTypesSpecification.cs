@@ -12,6 +12,8 @@ namespace Service.Specification
                 (!queryParams.BrandId.HasValue || p.BrandId == queryParams.BrandId)
                 &&
                 (!queryParams.TypeId.HasValue || p.TypeId == queryParams.TypeId)
+                &&
+                (string.IsNullOrEmpty(queryParams.SearchValue) || p.Name.ToLower().Contains(queryParams.SearchValue.ToLower()))
                 )
         {
 
