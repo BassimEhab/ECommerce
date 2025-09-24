@@ -1,4 +1,5 @@
 using DomainLayer.Contracts;
+using ECommerce.CustomMiddleWares;
 using Microsoft.EntityFrameworkCore;
 using Presistence;
 using Presistence.Data;
@@ -42,7 +43,7 @@ using var Scope = app.Services.CreateScope();
 var ObjectOfDataSeeding = Scope.ServiceProvider.GetRequiredService<IDataSeeding>();
 ObjectOfDataSeeding.DataSeed();
 #endregion
-
+app.UseMiddleware<CustomExceptionHandlerMiddleWare>();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
