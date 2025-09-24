@@ -1,4 +1,5 @@
-﻿using Shared.ErrorModels;
+﻿using DomainLayer.Exceptions;
+using Shared.ErrorModels;
 using System.Net;
 
 namespace ECommerce.CustomMiddleWares
@@ -23,11 +24,15 @@ namespace ECommerce.CustomMiddleWares
             {
                 _logger.LogError(ex, "Something Went Wrong");
                 // Set Status Code For Response
-                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                context.Response.StatusCode = ex switch
+                {
+                    NotFoundException => (int)HttpStatusCode.NotFound,
+                    _ => (int)HttpStatusCode.InternalServerError
+                };
                 // Response Object
                 var Response = new ErrorToReturn
                 {
-                    StatusCode = (int)HttpStatusCode.InternalServerError,
+                    StatusCode = context.Response.StatusCode,
                     ErrorMessage = ex.Message
                 };
                 // Return Object As JSON
