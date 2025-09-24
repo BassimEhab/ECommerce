@@ -1,5 +1,7 @@
 using DomainLayer.Contracts;
 using ECommerce.CustomMiddleWares;
+using ECommerce.Factories;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Presistence;
 using Presistence.Data;
@@ -36,6 +38,10 @@ builder.Services.AddAutoMapper(cfg => { }, typeof(ProductProfile).Assembly);
 builder.Services.AddScoped<IServiceManager, ServiceManager>();
 #endregion
 
+builder.Services.Configure<ApiBehaviorOptions>((options) =>
+{
+    options.InvalidModelStateResponseFactory = ApiResponseFactory.GenerateApiValidationErrorResponse;
+});
 var app = builder.Build();
 
 #region DataSeeding

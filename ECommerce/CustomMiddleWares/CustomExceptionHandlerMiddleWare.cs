@@ -19,27 +19,46 @@ namespace ECommerce.CustomMiddleWares
             try
             {
                 await _next.Invoke(context);
+
+                await HandleNotFoundEndPointAsync(context);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Something Went Wrong");
                 // Set Status Code For Response
-                context.Response.StatusCode = ex switch
-                {
-                    NotFoundException => (int)HttpStatusCode.NotFound,
-                    _ => (int)HttpStatusCode.InternalServerError
-                };
-                // Response Object
-                var Response = new ErrorToReturn
-                {
-                    StatusCode = context.Response.StatusCode,
-                    ErrorMessage = ex.Message
-                };
-                // Return Object As JSON
-                await context.Response.WriteAsJsonAsync(Response);
+                await HandleExceptionsAsync(context, ex);
 
             }
         }
 
+        private static async Task HandleExceptionsAsync(HttpContext context, Exception ex)
+        {
+            context.Response.StatusCode = ex switch
+            {
+                NotFoundException => (int)HttpStatusCode.NotFound,
+                _ => (int)HttpStatusCode.InternalServerError
+            };
+            // Response Object
+            var Response = new ErrorToReturn
+            {
+                StatusCode = context.Response.StatusCode,
+                ErrorMessage = ex.Message
+            };
+            // Return Object As JSON
+            await context.Response.WriteAsJsonAsync(Response);
+        }
+
+        private static async Task HandleNotFoundEndPointAsync(HttpContext context)
+        {
+            if (context.Response.StatusCode == (int)HttpStatusCode.NotFound)
+            {
+                var Response = new ErrorToReturn
+                {
+                    StatusCode = context.Response.StatusCode,
+                    ErrorMessage = $"End Point {context.Request.Path} Is Not Found"
+                };
+                await context.Response.WriteAsJsonAsync(Response);
+            }
+        }
     }
 }
