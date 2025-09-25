@@ -1,14 +1,6 @@
-using DomainLayer.Contracts;
-using ECommerce.CustomMiddleWares;
-using ECommerce.Factories;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using ECommerce.Extensions;
 using Presistence;
-using Presistence.Data;
-using Presistence.Repositories;
 using Service;
-using Service.MappingProfiles;
-using ServiceAbstraction;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,38 +10,14 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-#region DbContextDI
-builder.Services.AddDbContext<StoreDbContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
-#endregion
+builder.Services.AddInfrastructureServices(builder.Configuration);
+builder.Services.AddApplicationServices();
+builder.Services.AddWebApplicationServices();
 
-#region DataSeedingDI
-builder.Services.AddScoped<IDataSeeding, DataSeeding>();
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-#endregion
-
-#region AutoMapperDI
-builder.Services.AddAutoMapper(cfg => { }, typeof(ProductProfile).Assembly);
-#endregion
-
-#region ServiceDI
-builder.Services.AddScoped<IServiceManager, ServiceManager>();
-#endregion
-
-builder.Services.Configure<ApiBehaviorOptions>((options) =>
-{
-    options.InvalidModelStateResponseFactory = ApiResponseFactory.GenerateApiValidationErrorResponse;
-});
 var app = builder.Build();
+await app.SeedDataAsync();
 
-#region DataSeeding
-using var Scope = app.Services.CreateScope();
-var ObjectOfDataSeeding = Scope.ServiceProvider.GetRequiredService<IDataSeeding>();
-ObjectOfDataSeeding.DataSeed();
-#endregion
-app.UseMiddleware<CustomExceptionHandlerMiddleWare>();
+app.UseCustomExceptionMiddleWare();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
