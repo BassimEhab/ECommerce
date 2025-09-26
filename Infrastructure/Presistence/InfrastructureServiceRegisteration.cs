@@ -4,21 +4,26 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Presistence.Data;
 using Presistence.Repositories;
+using StackExchange.Redis;
 
 namespace Presistence
 {
     public static class InfrastructureServiceRegisteration
     {
-        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddInfrastructureServices(this IServiceCollection Services, IConfiguration configuration)
         {
-            services.AddDbContext<StoreDbContext>(options =>
+            Services.AddDbContext<StoreDbContext>(options =>
             {
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
             });
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IDataSeeding, DataSeeding>();
-
-            return services;
+            Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            Services.AddScoped<IDataSeeding, DataSeeding>();
+            Services.AddScoped<IBasketRepository, BasketRepository>();
+            Services.AddSingleton<IConnectionMultiplexer>((_) =>
+            {
+                return ConnectionMultiplexer.Connect(configuration.GetConnectionString("RedisConnectionString"));
+            });
+            return Services;
         }
     }
 }

@@ -5,7 +5,7 @@ using DomainLayer.Models.ProductModule;
 using Service.Specification;
 using ServiceAbstraction;
 using Shared;
-using Shared.DataTransferObjects;
+using Shared.DataTransferObjects.ProductDtos;
 namespace Service
 {
     public class ProductService(IUnitOfWork _unitOfWork, IMapper _mapper) : IProductService

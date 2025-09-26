@@ -1,4 +1,4 @@
-﻿namespace Shared.DataTransferObjects
+﻿namespace Shared.DataTransferObjects.ProductDtos
 {
     public class ProductDto
     {

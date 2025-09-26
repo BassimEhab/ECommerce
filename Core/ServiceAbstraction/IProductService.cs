@@ -1,5 +1,5 @@
 ﻿using Shared;
-using Shared.DataTransferObjects;
+using Shared.DataTransferObjects.ProductDtos;
 
 namespace ServiceAbstraction
 {
