@@ -1,9 +1,12 @@
-﻿namespace DomainLayer.Models.IdentityModule
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace DomainLayer.Models.IdentityModule
 {
     public class Address
     {
         public int Id { get; set; } // Pk
-        public string FirsttName { get; set; } = default!;
+        [Column("FirsttName")]
+        public string FirstName { get; set; } = default!;
         public string LastName { get; set; } = default!;
         public string Street { get; set; } = default!;
         public string City { get; set; } = default!;

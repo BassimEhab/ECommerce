@@ -13,7 +13,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddApplicationServices();
 builder.Services.AddWebApplicationServices();
-
+builder.Services.AddJwtService(builder.Configuration);
 var app = builder.Build();
 await app.SeedDataAsync();
 
@@ -28,7 +28,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 // To use Static Files *product images*
 app.UseStaticFiles();
-
+app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
