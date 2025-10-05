@@ -2,13 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using ServiceAbstraction;
 using Shared.DataTransferObjects.IdentityDtos;
-using System.Security.Claims;
 
 namespace Presentation.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class AuthenticationController(IServiceManager _serviceManager) : ControllerBase
+    public class AuthenticationController(IServiceManager _serviceManager) : ApiBaseController
     {
         // Login
         [HttpPost("login")]
@@ -35,8 +32,7 @@ namespace Presentation.Controllers
         [HttpGet("CurrentUser")]
         public async Task<ActionResult<UserDto>> GetCurrentUser()
         {
-            var email = User.FindFirstValue(ClaimTypes.Email);
-            var appUser = await _serviceManager.authenticationService.GetCurrentUserAsync(email);
+            var appUser = await _serviceManager.authenticationService.GetCurrentUserAsync(GetEmailFromToken());
             return Ok(appUser);
         }
         // Get Current User Address
@@ -44,8 +40,7 @@ namespace Presentation.Controllers
         [HttpGet("Address")]
         public async Task<ActionResult<AddressDto>> GetUserAddress()
         {
-            var email = User.FindFirstValue(ClaimTypes.Email);
-            var address = await _serviceManager.authenticationService.GetCurrentUserAddressAsync(email);
+            var address = await _serviceManager.authenticationService.GetCurrentUserAddressAsync(GetEmailFromToken());
             return Ok(address);
         }
         // Update Current User Address
@@ -53,8 +48,7 @@ namespace Presentation.Controllers
         [HttpPut("Address")]
         public async Task<ActionResult<AddressDto>> UpdateUserAddress(AddressDto addressDto)
         {
-            var email = User.FindFirstValue(ClaimTypes.Email);
-            var UpdatedAdress = await _serviceManager.authenticationService.UpdateCurrentUserAddressAsync(email, addressDto);
+            var UpdatedAdress = await _serviceManager.authenticationService.UpdateCurrentUserAddressAsync(GetEmailFromToken(), addressDto);
             return Ok(UpdatedAdress);
         }
     }
