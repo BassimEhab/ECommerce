@@ -11,6 +11,7 @@ namespace Service
             // Add application services here
             services.AddAutoMapper(cfg => { }, typeof(ProductProfile).Assembly);
             services.AddScoped<IServiceManager, ServiceManager>();
+            services.AddScoped<ICacheService, CacheService>();
             return services;
         }
     }
