@@ -4,7 +4,7 @@ namespace Service.Specification.OrderModuleSpecifications
 {
     internal class OrderSpecifications : BaseSpecifications<Order, Guid>
     {
-        public OrderSpecifications(string email) : base(o => o.UserEmail == email)
+        public OrderSpecifications(string email) : base(o => o.buyerEmail == email)
         {
             AddInclude(o => o.DeliveryMethod);
             AddInclude(o => o.Items);

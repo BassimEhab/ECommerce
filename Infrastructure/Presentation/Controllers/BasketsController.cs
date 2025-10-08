@@ -4,7 +4,7 @@ using Shared.DataTransferObjects.BasketModuleDtos;
 
 namespace Presentation.Controllers
 {
-    public class BasketController(IServiceManager _serviceManager) : ApiBaseController
+    public class BasketsController(IServiceManager _serviceManager) : ApiBaseController
     {
         // Get Basket 
         [HttpGet]

@@ -22,7 +22,9 @@ namespace Service.MappingProfiles
                 .ForMember(des => des.PictureUrl, opt => opt
                 .MapFrom<OrderItemPictureUrlResolver>());
 
-            CreateMap<DeliveryMethod, DeliveryMethodDto>();
+            CreateMap<DeliveryMethod, DeliveryMethodDto>()
+                .ForMember(des => des.cost, opt => opt
+                .MapFrom(src => src.Price));
 
 
 

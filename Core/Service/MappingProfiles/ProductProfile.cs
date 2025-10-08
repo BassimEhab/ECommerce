@@ -9,10 +9,10 @@ namespace Service.MappingProfiles
         public ProductProfile()
         {
             CreateMap<Product, ProductDto>()
-                .ForMember(des => des.BrandName, options => options
+                .ForMember(des => des.productBrand, options => options
                 .MapFrom(src => src.ProductBrand.Name))
 
-                .ForMember(des => des.TypeName, options => options
+                .ForMember(des => des.productType, options => options
                 .MapFrom(src => src.ProductType.Name))
 
                 .ForMember(des => des.PictureUrl, options => options

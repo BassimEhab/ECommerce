@@ -15,7 +15,7 @@ namespace Service
         public async Task<OrderToReturnDto> CreateOrder(OrderDto orderDto, string email)
         {
             // Mapping The Address To Order Address
-            var orderAddress = _mapper.Map<AddressDto, OrderAddress>(orderDto.Address);
+            var orderAddress = _mapper.Map<AddressDto, OrderAddress>(orderDto.shipToAddress);
             // Get The Basket 
             var basket = await _basketRepo.GetBasketAsync(orderDto.BasketId) ?? throw new BasketNotFoundException(orderDto.BasketId);
             // Create Order Items List
