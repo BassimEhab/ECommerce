@@ -14,10 +14,15 @@ namespace Service
     {
         public async Task<OrderToReturnDto> CreateOrder(OrderDto orderDto, string email)
         {
-            // Mapping The Address To Order Address
-            var orderAddress = _mapper.Map<AddressDto, OrderAddress>(orderDto.shipToAddress);
             // Get The Basket 
             var basket = await _basketRepo.GetBasketAsync(orderDto.BasketId) ?? throw new BasketNotFoundException(orderDto.BasketId);
+            ArgumentException.ThrowIfNullOrEmpty(basket.paymentIntentId);
+            // Mapping The Address To Order Address
+            var OrderRepo = _unitOfWork.GetRepository<Order, Guid>();
+            var OrderSpec = new OrderWithPaymentIntentIdSpecifications(basket.paymentIntentId);
+            var ExistingOrder = await OrderRepo.GetByIdAsync(OrderSpec);
+            if (ExistingOrder != null)
+                OrderRepo.Remove(ExistingOrder);
             // Create Order Items List
             List<OrderItem> orderItems = [];
             var productRepo = _unitOfWork.GetRepository<Product, int>();
@@ -37,14 +42,16 @@ namespace Service
                 };
                 orderItems.Add(orderItem);
             }
+            var orderAddress = _mapper.Map<AddressDto, OrderAddress>(orderDto.shipToAddress);
             // Get Delivery Method
             var deliveryMethod = await _unitOfWork.GetRepository<DeliveryMethod, int>().GetByIdAsync(orderDto.DeliveryMethodId) ?? throw new DeliveryMethodNotFoundException(orderDto.DeliveryMethodId);
 
             // Calculate SubtTotal
             var subTotal = orderItems.Sum(i => i.Quantity * i.Price);
 
-            var order = new Order(email, orderAddress, deliveryMethod, orderItems, subTotal);
-            await _unitOfWork.GetRepository<Order, Guid>().AddAsync(order);
+
+            var order = new Order(email, orderAddress, deliveryMethod, orderItems, subTotal, basket.paymentIntentId);
+            await OrderRepo.AddAsync(order);
             await _unitOfWork.SaveChangesAsync();
             return _mapper.Map<Order, OrderToReturnDto>(order);
         }
