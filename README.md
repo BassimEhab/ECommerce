@@ -6,6 +6,7 @@
 [![Framework Badge](https://img.shields.io/badge/Framework-ASP.NET%20Core%209-purple.svg)]()
 [![License Badge](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Database Badge](https://img.shields.io/badge/Database-SQL%20Server-red.svg)]()
+[![Redis Badge](https://img.shields.io/badge/Database-Redis-red.svg)]()
 
 ---
 
